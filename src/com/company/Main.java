@@ -50,12 +50,9 @@ public class Main {
                 System.out.println("Not a valid input");
             }
         }
-        raffleDict.put(userRaffle, askForName());
-        return raffleDict;
-    }
-    public static String askForName() {
         System.out.println("Enter your name:");
-        return input();
+        raffleDict.put(userRaffle, input());
+        return raffleDict;
     }
     public static void checkTicket(HashMap<Integer, String> raffleDict) {
         int largeNum = 0;
