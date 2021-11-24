@@ -3,20 +3,22 @@ package com.company;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Main {
 
+    static HashMap<Integer, String> raffleDict = new HashMap<>();
+
     public static void main(String[] args) {
-        HashMap<Integer, String> raffleDict = new HashMap<>();
         boolean again = true;
         while (again) {
             System.out.println("Would you like to buy a ticket, check a ticket, or leave: B / C / L");
             switch (input().toLowerCase()) {
                 case ("b"):
-                    raffleDict = raffleBuy(raffleDict);
+                    raffleBuy();
                     break;
                 case ("c"):
-                    checkTicket(raffleDict);
+                    checkTicket();
                     break;
                 case ("l"):
                     again = false;
@@ -34,15 +36,13 @@ public class Main {
             return "";
         }
     }
-    public static HashMap<Integer, String> raffleBuy(HashMap<Integer, String> raffleDict) {
+    public static void raffleBuy() {
+        Random rand = new Random();
         int userRaffle;
         while (true) {
             try {
-                System.out.println("Enter the raffle number you want to buy:");
-                userRaffle = Integer.parseInt(input());
-                if (raffleDict.containsKey(userRaffle)) {
-                    System.out.println("Someone already has that raffle number");
-                } else {
+                userRaffle = rand.nextInt();
+                if (! raffleDict.containsKey(userRaffle)) {
                     System.out.println("You have bought raffle ticket #" + userRaffle);
                     break;
                 }
@@ -52,29 +52,11 @@ public class Main {
         }
         System.out.println("Enter your name:");
         raffleDict.put(userRaffle, input());
-        return raffleDict;
     }
-    public static void checkTicket(HashMap<Integer, String> raffleDict) {
-        int largeNum = 0;
-        boolean numExists = false;
+    public static void checkTicket() {
         boolean numPrime = true;
         if (! raffleDict.isEmpty()) {
-            for (int i = 0; i < raffleDict.size(); i++) {
-                if (Integer.parseInt(raffleDict.keySet().toArray()[i].toString()) > largeNum) {
-                    largeNum = Integer.parseInt(raffleDict.keySet().toArray()[i].toString());
-                }
-            }
-            System.out.println("Enter the number you want to check");
-            int numToCheck = Integer.parseInt(input());
-            for (int i = 0; i < raffleDict.size(); i++) {
-                if (Integer.parseInt(raffleDict.keySet().toArray()[i].toString()) == numToCheck) {
-                    numExists = true;
-                    break;
-                }
-            }
-            if (! numExists) {
-                System.out.println("No one has bought that ticket yet");
-            }
+            numInForCheck();
             else {
                 System.out.println("Enter your name:");
                 String nameToCheck = input();
@@ -101,5 +83,40 @@ public class Main {
         else {
             System.out.println("No one has bought any tickets yet.");
         }
+    }
+    public static int numInForCheck() {
+        int largeNum = 0;
+        boolean numExists = false;
+        int numToCheck = 0;
+        if (! raffleDict.isEmpty()) {
+            for (int i = 0; i < raffleDict.size(); i++) {
+                if (Integer.parseInt(raffleDict.keySet().toArray()[i].toString()) > largeNum) {
+                    largeNum = Integer.parseInt(raffleDict.keySet().toArray()[i].toString());
+                }
+            }
+            do {
+                System.out.println("Enter the number you want to check");
+                String numToCheckString = input();
+                if (Character.toString(numToCheckString.charAt(0)).equals("#")) {
+                    numToCheckString = numToCheckString.substring(1, numToCheckString.length());
+                }
+                try {
+                    numToCheck = Integer.parseInt(numToCheckString);
+                    break;
+                } catch (Exception e) {
+                    System.out.println("That is not a valid input");
+                }
+            } while (true);
+            for (int i = 0; i < raffleDict.size(); i++) {
+                if (Integer.parseInt(raffleDict.keySet().toArray()[i].toString()) == numToCheck) {
+                    numExists = true;
+                    break;
+                }
+            }
+            if (!numExists) {
+                System.out.println("No one has bought that ticket yet");
+            }
+        }
+        return numToCheck;
     }
 }
